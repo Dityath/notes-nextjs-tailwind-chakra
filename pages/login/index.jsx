@@ -9,6 +9,8 @@ const Login = () => {
   return (
     <div
       className="
+        transition duration-300
+        bg-white
         sm:font-sans sm:bg-blue-500 
         sm:w-screen h-screen sm:py-20
         flex items-center justify-center

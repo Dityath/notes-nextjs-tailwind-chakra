@@ -1,9 +1,11 @@
 import Head from "next/head";
-import Link from "next/link";
 import Footer from "../../components/login/footer";
-import { Input, Button, Box } from "@chakra-ui/react";
+import { Input, Button, Box, Avatar, AvatarBadge } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 const Login = () => {
+  const router = useRouter();
+
   return (
     <div
       className="
@@ -21,7 +23,10 @@ const Login = () => {
           bg-white text-center
           max-w-sm h-full mx-auto rounded-3xl p-14"
         >
-          <h1 className="text-4xl font-semibold text-gray-900">Welcome!!</h1>
+          <Avatar />
+          <h1 className="text-4xl font-semibold text-gray-900 mt-6">
+            Welcome!!
+          </h1>
           <p className="text-gray-400 text-xs mt-3">
             Please insert your username & password correctly
           </p>
@@ -44,8 +49,12 @@ const Login = () => {
           </div>
           <p className="text-gray-400 text-sm mt-10">
             Don’t have an account? Make it
-            <b className="cursor-pointer">
-              <Link href="/login/register"> here</Link>
+            <b
+              onClick={() => router.push("/login/register")}
+              className="cursor-pointer hover:text-gray-600 transition duration-300"
+            >
+              {" "}
+              here
             </b>
             .
           </p>

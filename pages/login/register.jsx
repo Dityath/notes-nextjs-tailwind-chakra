@@ -1,9 +1,11 @@
 import Head from "next/head";
-import Link from "next/link";
 import Footer from "../../components/login/footer";
 import { Input, Button, Box } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 const Register = () => {
+  const router = useRouter();
+
   return (
     <div
       className="
@@ -60,8 +62,12 @@ const Register = () => {
           </div>
           <p className="text-gray-400 text-sm mt-10">
             Already have an account?
-            <b className="cursor-pointer">
-              <Link href="/login"> Login</Link>
+            <b
+              onClick={() => router.push("/login")}
+              className="cursor-pointer hover:text-gray-600 transition duration-300"
+            >
+              {" "}
+              Login
             </b>
             .
           </p>

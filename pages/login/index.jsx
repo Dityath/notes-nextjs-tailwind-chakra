@@ -1,10 +1,25 @@
+import { useState } from "react";
+
 import Head from "next/head";
-import Footer from "../../components/login/footer";
-import { Input, Button, Box, Avatar, AvatarBadge } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+
+import Footer from "../../components/login/footer";
+import {
+  Input,
+  InputGroup,
+  Button,
+  Box,
+  Avatar,
+  AvatarBadge,
+  InputRightElement,
+  Icon,
+} from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 const Login = () => {
   const router = useRouter();
+  const [showPass, setShowPass] = useState(false);
+  const handlePass = () => setShowPass(!showPass);
 
   return (
     <div
@@ -40,13 +55,29 @@ const Login = () => {
               placeholder="Username"
               size="md"
             />
-            <Input
-              type="password"
-              colorScheme="blue"
-              rounded="md"
-              placeholder="Password"
-              size="md"
-            />
+            <InputGroup size="md">
+              <Input
+                type={showPass ? "text" : "password"}
+                colorScheme="blue"
+                rounded="md"
+                placeholder="Password"
+                size="md"
+              />
+              <InputRightElement width="4.5rem">
+                <Button
+                  h="1.75rem"
+                  size="sm"
+                  variant="link"
+                  onClick={handlePass}
+                >
+                  {showPass ? (
+                    <Icon as={ViewOffIcon} />
+                  ) : (
+                    <Icon as={ViewIcon} />
+                  )}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
             <Button colorScheme="blue">Login</Button>
           </div>
           <p className="text-gray-400 text-sm mt-10">

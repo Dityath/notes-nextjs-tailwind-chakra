@@ -1,12 +1,17 @@
 import Link from "next/link";
+import Nav from "../components/navigation/nav";
 
-export default function Home() {
+const Home = () => {
   return (
-    <div className="bg-white">
-      Kosonk min, baru jadi login:{" "}
-      <Link href="/login">
-        <a className="underline">sini</a>
-      </Link>
-    </div>
+    <Nav>
+      <div className="bg-white">
+        Kosonk min, baru jadi login:{" "}
+        <Link href="/login">
+          <a className="underline">sini</a>
+        </Link>
+      </div>
+    </Nav>
   );
-}
+};
+
+export default Home;

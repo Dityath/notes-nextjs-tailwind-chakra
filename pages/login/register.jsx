@@ -1,7 +1,10 @@
 import Head from "next/head";
 import Footer from "../../components/login/footer";
+
 import { Input, Button, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+
+import { Formik, Field, Form } from "formik";
 
 const Register = () => {
   const router = useRouter();
@@ -31,37 +34,59 @@ const Register = () => {
           <p className="text-gray-400 text-xs mt-3">
             Register your username & password
           </p>
-          <div className="flex flex-col gap-3 mt-8">
-            <Input
-              type="text"
-              colorScheme="blue"
-              rounded="md"
-              placeholder="Name"
-              size="md"
-            />
-            <Input
-              type="text"
-              colorScheme="blue"
-              rounded="md"
-              placeholder="Username"
-              size="md"
-            />
-            <Input
-              type="password"
-              colorScheme="blue"
-              rounded="md"
-              placeholder="Password"
-              size="md"
-            />
-            <Input
-              type="text"
-              colorScheme="blue"
-              rounded="md"
-              placeholder="City"
-              size="md"
-            />
-            <Button colorScheme="blue">Login</Button>
-          </div>
+          <Formik
+            initialValues={{
+              name: "",
+              username: "",
+              password: "",
+              city: "",
+            }}
+          >
+            {({ values }) => (
+              <Form className="flex flex-col gap-3 mt-8">
+                <Field
+                  name="name"
+                  type="text"
+                  colorScheme="blue"
+                  rounded="md"
+                  placeholder="Name"
+                  size="md"
+                  as={Input}
+                />
+                <Field
+                  name="username"
+                  type="text"
+                  colorScheme="blue"
+                  rounded="md"
+                  placeholder="Username"
+                  size="md"
+                  as={Input}
+                />
+                <Field
+                  name="password"
+                  type="password"
+                  colorScheme="blue"
+                  rounded="md"
+                  placeholder="Password"
+                  size="md"
+                  as={Input}
+                />
+                <Field
+                  name="city"
+                  type="text"
+                  colorScheme="blue"
+                  rounded="md"
+                  placeholder="City"
+                  size="md"
+                  as={Input}
+                />
+                <Button type="submit" colorScheme="blue">
+                  Login
+                </Button>
+                <pre>{JSON.stringify(values, null, 2)}</pre>
+              </Form>
+            )}
+          </Formik>
           <p className="text-gray-400 text-sm mt-10">
             Already have an account?
             <b

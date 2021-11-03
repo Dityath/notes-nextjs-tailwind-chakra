@@ -1,13 +1,31 @@
+import React, { useState } from "react";
+
 import Head from "next/head";
 import Footer from "../../components/login/footer";
 
-import { Input, Button, Box } from "@chakra-ui/react";
+import {
+  Input,
+  Button,
+  Box,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 import { Formik, Field, Form } from "formik";
+import * as Yup from "yup";
+import API from "../../api";
 
 const Register = () => {
   const router = useRouter();
+  const [submit, setSubmit] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modal, setModal] = useState(false);
+  const [modalStatus, setModalStatus] = useState(true);
 
   return (
     <div
@@ -22,6 +40,42 @@ const Register = () => {
       <Head>
         <title>Notes - Register</title>
       </Head>
+      <Modal closeOnOverlayClick={false} isOpen={modal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            {modalStatus ? <>Account Created</> : <>Oops, Something wrong</>}
+          </ModalHeader>
+          <ModalBody>{modalMessage}</ModalBody>
+          <ModalFooter>
+            {modalStatus ? (
+              <Button onClick={() => router.push("/login")} colorScheme="blue">
+                Login
+              </Button>
+            ) : (
+              <>
+                <Button
+                  onClick={() => router.push("/login")}
+                  colorScheme="blue"
+                  variant="ghost"
+                  marginRight="4"
+                >
+                  Login
+                </Button>
+                <Button
+                  onClick={() => {
+                    setSubmit(false);
+                    setModal(false);
+                  }}
+                  colorScheme="blue"
+                >
+                  Try Again
+                </Button>
+              </>
+            )}
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Box height="550px">
         <div
           className="
@@ -41,10 +95,39 @@ const Register = () => {
               password: "",
               city: "",
             }}
+            onSubmit={(data, { setSubmitting }) => {
+              setSubmit(true);
+              setTimeout(() => {
+                const payload = new FormData();
+                payload.append("name", data.name);
+                payload.append("username", data.username);
+                payload.append("password", data.password);
+                payload.append("city", data.city);
+                API.postRegistration(data)
+                  .then(() => {
+                    setModal(true);
+                    setModalStatus(true);
+                    setModalMessage("Registered");
+                  })
+                  .catch((err) => {
+                    setModal(true);
+                    setModalStatus(false);
+                    setModalMessage(err.response.data.message);
+                  });
+                setSubmitting(false);
+              }, 500);
+            }}
+            validationSchema={Yup.object().shape({
+              name: Yup.string().required(true),
+              username: Yup.string().required(true),
+              password: Yup.string().required(true),
+              city: Yup.string().required(true),
+            })}
           >
-            {({ values }) => (
+            {({ errors, touched }) => (
               <Form className="flex flex-col gap-3 mt-8">
                 <Field
+                  isInvalid={errors.name && touched.name}
                   name="name"
                   type="text"
                   colorScheme="blue"
@@ -54,6 +137,7 @@ const Register = () => {
                   as={Input}
                 />
                 <Field
+                  isInvalid={errors.username && touched.username}
                   name="username"
                   type="text"
                   colorScheme="blue"
@@ -63,6 +147,7 @@ const Register = () => {
                   as={Input}
                 />
                 <Field
+                  isInvalid={errors.password && touched.password}
                   name="password"
                   type="password"
                   colorScheme="blue"
@@ -72,6 +157,7 @@ const Register = () => {
                   as={Input}
                 />
                 <Field
+                  isInvalid={errors.city && touched.city}
                   name="city"
                   type="text"
                   colorScheme="blue"
@@ -80,10 +166,14 @@ const Register = () => {
                   size="md"
                   as={Input}
                 />
-                <Button type="submit" colorScheme="blue">
-                  Login
+                <Button
+                  loadingText="Loading"
+                  isLoading={submit}
+                  type="submit"
+                  colorScheme="blue"
+                >
+                  Register
                 </Button>
-                <pre>{JSON.stringify(values, null, 2)}</pre>
               </Form>
             )}
           </Formik>

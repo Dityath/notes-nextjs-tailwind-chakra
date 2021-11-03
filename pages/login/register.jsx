@@ -106,11 +106,6 @@ const Register = () => {
             onSubmit={(data, { setSubmitting }) => {
               setSubmit(true);
               setTimeout(() => {
-                const payload = new FormData();
-                payload.append("name", data.name);
-                payload.append("username", data.username);
-                payload.append("password", data.password);
-                payload.append("city", data.city);
                 API.postRegistration(data)
                   .then(() => {
                     setModal(true);

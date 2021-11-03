@@ -11,18 +11,30 @@ import {
   Button,
   Box,
   Avatar,
-  AvatarBadge,
   InputRightElement,
   Icon,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import { Formik, Field, Form } from "formik";
+import * as Yup from "yup";
+import API from "../../api";
 
 const Login = () => {
   const router = useRouter();
+
   const [showPass, setShowPass] = useState(false);
   const handlePass = () => setShowPass(!showPass);
+
+  const [submit, setSubmit] = useState(false);
+  const [wrongModal, setWrongModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   return (
     <div
@@ -37,6 +49,28 @@ const Login = () => {
       <Head>
         <title>Notes - Login</title>
       </Head>
+      <Modal closeOnOverlayClick={false} isOpen={wrongModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Login Error</ModalHeader>
+          <ModalBody>
+            <p>{modalMessage}</p>
+            <p>Try to check your username or password again</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              onClick={() => {
+                setSubmit(false);
+                setWrongModal(false);
+              }}
+            >
+              {" "}
+              Ok{" "}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Box height="550px">
         <div
           className="
@@ -55,10 +89,29 @@ const Login = () => {
               username: "",
               password: "",
             }}
+            onSubmit={(data, { setSubmitting }) => {
+              setSubmit(true);
+              setTimeout(() => {
+                API.postLogin(data)
+                  .then(() => {
+                    router.push("/");
+                  })
+                  .catch((err) => {
+                    setWrongModal(true);
+                    setModalMessage(err.response.data.message);
+                  });
+                setSubmitting(false);
+              }, 500);
+            }}
+            validationSchema={Yup.object().shape({
+              username: Yup.string().required(true),
+              password: Yup.string().required(true),
+            })}
           >
-            {({ values }) => (
+            {({ errors, touched }) => (
               <Form className="flex flex-col gap-3 mt-8">
                 <Field
+                  isInvalid={errors.username && touched.username}
                   name="username"
                   type="text"
                   colorScheme="blue"
@@ -69,6 +122,7 @@ const Login = () => {
                 />
                 <InputGroup size="md">
                   <Field
+                    isInvalid={errors.password && touched.password}
                     name="password"
                     type={showPass ? "text" : "password"}
                     colorScheme="blue"
@@ -93,10 +147,9 @@ const Login = () => {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                <Button type="submit" colorScheme="blue">
-                  login
+                <Button isLoading={submit} type="submit" colorScheme="blue">
+                  Login
                 </Button>
-                <pre>{JSON.stringify(values, null, 2)}</pre>
               </Form>
             )}
           </Formik>

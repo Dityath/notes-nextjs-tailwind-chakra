@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Head from "next/head";
 import Footer from "../../components/login/footer";
@@ -26,6 +26,14 @@ const Register = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [modal, setModal] = useState(false);
   const [modalStatus, setModalStatus] = useState(true);
+
+  useEffect(() => {
+    API.getUserInfo()
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => console.log(err.response));
+  }, []);
 
   return (
     <div
